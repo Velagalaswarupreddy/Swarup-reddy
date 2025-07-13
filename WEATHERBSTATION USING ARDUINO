@@ -1,0 +1,45 @@
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+const int analogIn = A0;
+int humiditysensorOutput = 0;
+int RawValue = 0;
+double Voltage = 0;
+double tempC = 0;
+double tempF = 0;
+void setup() {
+Serial.begin(9600);
+lcd.begin(16, 2);
+pinMode(A1, INPUT);
+lcd.setCursor(0, 0);
+lcd.print("Weather Station");
+delay(2000);
+}
+void loop() {
+RawValue = analogRead(analogIn);
+Voltage = (RawValue / 1023.0) * 5000;
+tempC = (Voltage - 500) * 0.1;
+tempF = (tempC * 1.8) + 32;
+humiditysensorOutput = analogRead(A1);
+int humidity = map(humiditysensorOutput, 0, 1023, 10, 70);
+Serial.print("Raw Value = ");
+Serial.print(RawValue);
+Serial.print("\t milli volts = ");
+Serial.print(Voltage, 0);
+Serial.print("\t Temperature in C = ");
+Serial.print(tempC, 1);
+Serial.print("\t Temperature in F = ");
+Serial.println(tempF, 1);
+Serial.print("Humidity: ");
+Serial.print(humidity);
+Serial.println("%");
+lcd.clear();
+lcd.setCursor(0, 0);
+lcd.print("Temp: ");
+lcd.print(tempC, 1);
+lcd.print(" C");
+lcd.setCursor(0, 1);
+lcd.print("Hum: ");
+lcd.print(humidity);
+lcd.print(" %");
+delay(5000);
+}
